@@ -1,0 +1,12 @@
+.idea/
+
+# MacOS Finder
+.DS_Store
+
+# Logs
+logs/
+**/*.log
+
+# Local configurations
+lavalink/application.local.yml
+postgres/local.Dockerfile

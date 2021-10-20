@@ -1,0 +1,39 @@
+name: Publish Postgres
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'postgres/**'
+      - 'github/workflows/publish-postgres.yml'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1.6.0
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2.7.0
+        with:
+          push: true
+          context: ./postgres
+          tags: |
+            starlightpyro/postgres:latest
+            ghcr.io/starlite-project/postgres:latest
